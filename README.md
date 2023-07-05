@@ -1,4 +1,4 @@
-# React Weather API Project
+# React Weather Application
 
 This project is a React-based web application that utilizes a weather API to provide users with real-time weather conditions. Users can get the weather conditions of their current location automatically or search for the weather in a specific place using the search field in the navbar.
 
