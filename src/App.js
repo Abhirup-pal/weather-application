@@ -26,13 +26,10 @@ function App() {
         });
     }
     getData();
-    console.log(lat,long,`${process.env.REACT_APP_API_URL}/weather/?lat=${lat}&lon=${long}&units=metric&APPID=${process.env.REACT_APP_API_KEY}`)
-    console.log("data",data);
   }, [lat, long])
 
   const handleSearchOnSubmit = (event)=>{
     setCity(event.target.value);
-    console.log(city, `${process.env.REACT_APP_API_URL}/weather/?q=${city}&units=metric&APPID=${process.env.REACT_APP_API_KEY}`)
     const getData = async () => {
       await fetch(`${process.env.REACT_APP_API_URL}/weather/?q=${city}&units=metric&APPID=${process.env.REACT_APP_API_KEY}`)
         .then(res => res.json())
