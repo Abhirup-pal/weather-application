@@ -1,25 +1,63 @@
-import logo from './logo.svg';
 import './App.css';
+import Weather from './Components/WeatherCard';
+import React, { useEffect, useState } from "react";
 
 function App() {
+  const [lat, setLat] = useState([]);
+  const [long, setLong] = useState([]);
+  const [data, setData] = useState([]);
+  const [city, setCity] = useState([]);
+  const [weatherData, setWeatherData] = useState([]);
+
+  useEffect(() => {
+    const getData = async () => {
+      navigator.geolocation.getCurrentPosition(function (position) {
+        setLat(position.coords.latitude);
+        setLong(position.coords.longitude);
+      });
+      await fetch(`${process.env.REACT_APP_API_URL}/weather/?lat=${lat}&lon=${long}&units=metric&APPID=${process.env.REACT_APP_API_KEY}`)
+        .then(res => res.json())
+        .then(result => {
+          if(result.cod===200){
+            setData(result);
+            setWeatherData(result);
+          }
+          else setData([]);
+        });
+    }
+    getData();
+    console.log(lat,long,`${process.env.REACT_APP_API_URL}/weather/?lat=${lat}&lon=${long}&units=metric&APPID=${process.env.REACT_APP_API_KEY}`)
+    console.log("data",data);
+  }, [lat, long])
+
+  const handleSearchOnSubmit = (event)=>{
+    setCity(event.target.value);
+    console.log(city, `${process.env.REACT_APP_API_URL}/weather/?q=${city}&units=metric&APPID=${process.env.REACT_APP_API_KEY}`)
+    const getData = async () => {
+      await fetch(`${process.env.REACT_APP_API_URL}/weather/?q=${city}&units=metric&APPID=${process.env.REACT_APP_API_KEY}`)
+        .then(res => res.json())
+        .then(result => {
+          if(result!=null && result.cod==200)
+            setWeatherData(result)
+          else 
+            setWeatherData(data);
+        });
+    }
+    getData();
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='container d-flex flex-column'>
+      <nav className="navbar navbar-light bg-light justify-content-between mb-5">
+        <a className="navbar-brand" href='/'>Home</a>
+        <form className="form-inline d-flex">
+          <input className="form-control mr-sm-2" type="search" placeholder="Search" onChange={handleSearchOnSubmit}/>
+        </form>
+      </nav>
+      <Weather weatherData={weatherData} />
+
     </div>
   );
+
 }
 
 export default App;
